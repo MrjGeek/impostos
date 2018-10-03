@@ -1,0 +1,89 @@
+CREATE DATABASE vendas
+  WITH ENCODING='UTF8'
+       CONNECTION LIMIT=-1;
+
+CREATE TABLE public.impostos
+(
+   idimpostos serial, 
+   nome text, 
+   porcentagem numeric(20,2), 
+   PRIMARY KEY (idimpostos)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+
+CREATE TABLE public.categorias
+(
+   idcategorias serial, 
+   nome text, 
+   PRIMARY KEY (idcategorias)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+CREATE TABLE public.impostoscategoria
+(
+   idimpostoscategoria serial, 
+   categorias_idcategorias integer, 
+   impostos_idimpostos integer, 
+   PRIMARY KEY (idimpostoscategoria), 
+   FOREIGN KEY (categorias_idcategorias) REFERENCES public.categorias (idcategorias) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   FOREIGN KEY (impostos_idimpostos) REFERENCES public.impostos (idimpostos) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+CREATE TABLE public.produtos
+(
+   idprodutos serial, 
+   categorias_idcategorias integer, 
+   nome text, 
+   valor numeric(20,2), 
+   valorsemimposto numeric(20,2),
+   PRIMARY KEY (idprodutos), 
+   FOREIGN KEY (categorias_idcategorias) REFERENCES public.categorias (idcategorias) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+CREATE TABLE public.vendas
+(
+   idvendas serial, 
+   valorsemimposto numeric(20,2), 
+   valor numeric(20,2), 
+   recebido numeric(20,2), 
+   troco numeric(20,2), 
+   PRIMARY KEY (idvendas)
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+CREATE TABLE public.vendasprodutos
+(
+   idvendasprodutos serial, 
+   vendas_idvendas integer, 
+   produtos_idprodutos integer, 
+   total numeric(20,2), 
+   totalsemimposto numeric(20,2),
+   quantidade numeric(20,2),
+   PRIMARY KEY (idvendasprodutos), 
+   FOREIGN KEY (vendas_idvendas) REFERENCES public.vendas (idvendas) ON UPDATE NO ACTION ON DELETE NO ACTION, 
+   FOREIGN KEY (produtos_idprodutos) REFERENCES public.produtos (idprodutos) ON UPDATE NO ACTION ON DELETE NO ACTION
+) 
+WITH (
+  OIDS = FALSE
+)
+;
+
+
